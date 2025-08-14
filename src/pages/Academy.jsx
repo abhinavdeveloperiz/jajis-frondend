@@ -10,7 +10,7 @@ export default function Academy() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/api/pages/academy/");
+        const response = await axios.get("http://localhost:8000/academy/");
         setData(response.data);
       } catch (err) {
         console.error("Error fetching academy data:", err);

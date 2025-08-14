@@ -10,7 +10,7 @@ export default function Cosmetics() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/api/pages/cosmetics/");
+        const response = await axios.get("http://localhost:8000/cosmetics/");
         setData(response.data);
       } catch (err) {
         console.error("Error fetching cosmetics data:", err);

@@ -10,7 +10,7 @@ export default function Salons() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/api/pages/salons/");
+        const response = await axios.get("http://localhost:8000/salons/");
         setData(response.data);
       } catch (err) {
         console.error("Error fetching salons data:", err);

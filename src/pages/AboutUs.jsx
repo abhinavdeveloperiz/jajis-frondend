@@ -10,7 +10,7 @@ export default function AboutUs() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/api/pages/about-us/");
+        const response = await axios.get("http://localhost:8000/about-us/");
         setData(response.data);
       } catch (err) {
         console.error("Error fetching about us data:", err);

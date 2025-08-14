@@ -10,7 +10,7 @@ export default function Franchise() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/api/pages/franchise/");
+        const response = await axios.get("http://localhost:8000/franchise/");
         setData(response.data);
       } catch (err) {
         console.error("Error fetching franchise data:", err);

@@ -10,7 +10,7 @@ export default function FoodCourt() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/api/pages/food-court/");
+        const response = await axios.get("http://localhost:8000/food-court/");
         setData(response.data);
       } catch (err) {
         console.error("Error fetching food court data:", err);

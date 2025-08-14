@@ -17,7 +17,7 @@ export default function Contact() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/api/pages/contact/");
+        const response = await axios.get("http://localhost:8000/contact/");
         setData(response.data);
       } catch (err) {
         console.error("Error fetching contact data:", err);

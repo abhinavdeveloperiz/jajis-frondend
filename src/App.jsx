@@ -1,6 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 // Import all pages
 import Home from "./pages/Home";
@@ -15,8 +19,17 @@ import AboutUs from "./pages/AboutUs";
 import Contact from "./pages/Contact";
 
 export default function App() {
+  useEffect(() => {
+    AOS.init({
+      duration: 800, // Animation duration in ms
+      once: true,     // Whether animation should happen only once
+      easing: "ease-in-out",
+    });
+  }, []);
+
   return (
     <Router>
+      <ScrollToTop/>
       <div className="flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-grow">

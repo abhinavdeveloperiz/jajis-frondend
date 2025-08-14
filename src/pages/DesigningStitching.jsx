@@ -10,7 +10,7 @@ export default function DesigningStitching() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/api/pages/designing-stitching/");
+        const response = await axios.get("http://localhost:8000/designing-stitching/");
         setData(response.data);
       } catch (err) {
         console.error("Error fetching designing stitching data:", err);

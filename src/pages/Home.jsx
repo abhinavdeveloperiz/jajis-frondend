@@ -1,46 +1,115 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import CountUp from 'react-countup';
 
-export default function Home() {
-  const [data, setData] = useState({ images: [], content: "", page: "" });
+import {
+  ShoppingBag, Scissors, GraduationCap, Building,
+  Award, Utensils, Palette, Star, ArrowRight,
+  Play, MapPin, Phone, Clock, Users, Heart
+} from "lucide-react";
+
+import cosmeticsImg from "../assets/images/cosmetics.avif";
+import cosmetics_bg from "../assets/images/cos-bg.jpg";
+
+export default function JajisHomepage() {
+  const stats = [
+    { number: "10+", label: "Years Experience" },
+    { number: "5000+", label: "Happy Customers" },
+    { number: "50+", label: "Expert Staff" },
+    { number: "7", label: "Business Verticals" },
+  ];
+
+  const [data, setData] = useState({
+    video: null,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
+  // Business sections data
+  const businesses = [
+    {
+      id: "salons",
+      title: "Salons",
+      description: "Experience luxury and elegance at our premium salon services. From haircuts to spa treatments, we offer comprehensive beauty solutions with expert professionals.",
+      icon: <Scissors className="w-8 h-8" />,
+      link: "/salons",
+      layout: "left", // text left, image right
+      bgImage: "https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80",
+      cardImage: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80"
+    },
+    {
+      id: "cosmetics",
+      title: "Cosmetics",
+      description: "Discover our wide range of premium cosmetics designed to bring out the best in you. Quality products for every skin type and occasion.",
+      icon: <Palette className="w-8 h-8" />,
+      link: "/cosmetics",
+      layout: "right", // text right, image left
+      bgImage: cosmetics_bg,
+      cardImage: cosmeticsImg
+    },
+    {
+      id: "event-hall",
+      title: "Event Hall",
+      description: "Make your special occasions unforgettable with our elegant event hall. Perfect for weddings, corporate events, and celebrations of all kinds.",
+      icon: <Building className="w-8 h-8" />,
+      link: "/event-hall",
+      layout: "left",
+      bgImage: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2098&q=80",
+      cardImage: "https://www.imperialpalacebanquethall.com/wp-content/uploads/2018/08/NWX_3528.jpg"
+    },
+    {
+      id: "food-court",
+      title: "Food Court",
+      description: "Savor delicious cuisines from around the world at our vibrant food court. Fresh ingredients, authentic flavors, and memorable dining experiences.",
+      icon: <Utensils className="w-8 h-8" />,
+      link: "/food-court",
+      layout: "right",
+      bgImage: "https://images.unsplash.com/photo-1567521464027-f127ff144326?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80",
+      cardImage: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+    },
+    {
+      id: "designing-stitching",
+      title: "Designing & Stitching",
+      description: "Create custom fashion pieces with our expert designing and stitching services. From traditional wear to contemporary fashion, we bring your vision to life.",
+      icon: <Heart className="w-8 h-8" />,
+      link: "/designing-stitching",
+      layout: "left",
+      bgImage: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80",
+      cardImage: "https://images.unsplash.com/photo-1445205170230-053b83016050?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80"
+    },
+    {
+      id: "academy",
+      title: "Academy",
+      description: "Learn from the best with our comprehensive training programs. Develop your skills in beauty, fashion, and hospitality with expert guidance and certification.",
+      icon: <GraduationCap className="w-8 h-8" />,
+      link: "/academy",
+      layout: "right",
+      bgImage: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+      cardImage: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+    },
+    {
+      id: "franchise",
+      title: "Franchise",
+      description: "Join the Jajis family and start your own successful business venture. We provide complete support, training, and resources for franchise partners.",
+      icon: <Award className="w-8 h-8" />,
+      link: "/franchise",
+      layout: "left",
+      bgImage: "https://img.freepik.com/premium-photo/global-network-connection-franchise-marketing-system-business-concept_220873-13742.jpg",
+      cardImage: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80"
+    }
+  ];
+
+  // Fetch home video data from Django API
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/api/pages/home/");
+        const response = await axios.get("http://localhost:8000/");
         setData(response.data);
-        
-        // If no images from API, add sample images for testing
-        if (!response.data.images || response.data.images.length === 0) {
-          console.log("No images from API, using sample images for testing");
-          setData({
-            ...response.data,
-            images: [
-              {
-                id: 1,
-                image_url: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1920&h=1080&fit=crop",
-                title: "Beauty Salon"
-              },
-              {
-                id: 2,
-                image_url: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1920&h=1080&fit=crop",
-                title: "Cosmetics"
-              },
-              {
-                id: 3,
-                image_url: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1920&h=1080&fit=crop",
-                title: "Event Hall"
-              }
-            ]
-          });
-        }
       } catch (err) {
-        console.error("Error fetching home data:", err);
-        setError("Failed to load home page data");
+        console.error("Error fetching home page video:", err);
+        setError("Failed to load home page video");
       } finally {
         setLoading(false);
       }
@@ -49,200 +118,162 @@ export default function Home() {
     fetchData();
   }, []);
 
-  // Auto-rotate banner images
-  useEffect(() => {
-    if (data.images && data.images.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentBannerIndex((prev) => 
-          prev === data.images.length - 1 ? 0 : prev + 1
-        );
-      }, 5000); // Change every 5 seconds
 
-      return () => clearInterval(interval);
-    }
-  }, [data.images]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
-      </div>
-    );
-  }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Oops!</h2>
-          <p className="text-gray-600">{error}</p>
+      <div className="min-h-screen flex items-center justify-center text-center bg-black">
+        <div>
+          <div className="text-white text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-white mb-2">Oops!</h2>
+          <p className="text-gray-400">{error}</p>
         </div>
       </div>
     );
   }
 
+  // Hero video
+  const heroVideo = data.video?.video_url;
+
+  const BusinessSection = ({ business, index }) => {
+    const isLeft = business.layout === "left";
+    
+    return (
+      <section className="relative w-full h-screen bg-black text-white overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src={business.bgImage}
+            alt={`${business.title} Background`}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/60"></div>
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 container mx-auto h-full flex flex-col md:flex-row items-center px-6 md:px-12">
+          {/* Text Column */}
+          <div className={`w-full md:w-1/2 text-center md:text-left ${!isLeft ? 'md:order-2 md:pl-12' : 'md:pr-12'}`}>
+            <div className="flex items-center justify-center md:justify-start mb-4">
+              <div className="p-3 bg-white text-black rounded-full mr-4">
+                {business.icon}
+              </div>
+            </div>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6">
+              {business.title}
+            </h1>
+            <p className="text-base sm:text-lg md:text-xl mb-8 leading-relaxed text-gray-200">
+              {business.description}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+              <Link 
+                to={business.link}
+                className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-black rounded-full font-semibold shadow-lg hover:bg-gray-200 transition duration-300 flex items-center justify-center"
+              >
+                Explore {business.title} <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
+              
+            </div>
+          </div>
+
+          {/* Image Column */}
+          <div className={`w-full md:w-1/2 h-80 md:h-[600px] mt-8 md:mt-0 ${!isLeft ? 'md:order-1 md:pr-12' : 'md:pl-12'}`}>
+            <img
+              src={business.cardImage}
+              alt={`${business.title} Showcase`}
+              className="w-full h-full object-cover rounded-xl shadow-2xl border-4 border-white/20"
+            />
+          </div>
+        </div>
+      </section>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
-      {/* Hero Banner Section with Images */}
-      {data.images && data.images.length > 0 ? (
-        <div className="relative h-screen overflow-hidden">
-          {/* Banner Images Slider */}
-          {data.images.map((img, index) => (
-            <div
-              key={img.id}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentBannerIndex ? 'opacity-100' : 'opacity-0'
-              }`}
+    <div className="min-h-screen bg-black text-white">
+      {/* Hero Section */}
+      <section id="home" className="relative h-screen overflow-hidden">
+        <video
+          src={heroVideo}
+          autoPlay
+          loop
+          muted
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/50"></div>
+
+        <div className="relative z-20 flex items-center h-full">
+          <div className="max-w-4xl px-6 md:px-12">
+            <h1 className="text-3xl sm:text-4xl md:text-7xl  font-extrabold text-white mb-6">
+              Jajis Lifestyle
+            </h1>
+            <p className=" text-gray-200 mb-8 max-w-2xl">
+              Your premier destination for beauty, fashion, events, and culinary
+              experiences. Excellence in every service, memories in every moment.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link 
+                to='/salons' 
+                className="bg-white text-black px-8 py-4 rounded-full font-semibold flex items-center justify-center hover:bg-gray-200 transition duration-300"
+              >
+                Explore Services <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
+              <button className="border-2 border-white text-white px-8 py-4 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition duration-300">
+                <Play className="mr-2 w-5 h-5" /> Watch Story
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-16 bg-black text-white" data-aos="slide-right">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            {stats.map((stat, index) => (
+              <div key={index} className="p-6 bg-white rounded-xl">
+                <div className="text-4xl md:text-5xl font-bold mb-2 text-black">{stat.number}</div>
+                <div className="text-lg text-black">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Business Sections */}
+      {businesses.map((business, index) => (
+        <BusinessSection 
+          key={business.id} 
+          business={business} 
+          index={index} 
+        />
+      ))}
+
+      {/* Call to Action Section */}
+      <section className="py-20 bg-white text-black text-center">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Ready to Experience Excellence?
+          </h2>
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            Join thousands of satisfied customers who trust Jajis Lifestyle for all their needs.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link 
+              to="/contact" 
+              className="bg-black text-white px-8 py-4 rounded-full font-semibold hover:bg-gray-800 transition duration-300"
             >
-              <img
-                src={img.image_url}
-                alt={`Banner ${img.id}`}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.src = 'https://via.placeholder.com/1920x1080?text=Banner+Image';
-                }}
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-            </div>
-          ))}
-
-          {/* Banner Content */}
-          <div className="relative z-10 flex items-center justify-center h-full">
-            <div className="text-center text-white max-w-4xl mx-auto px-4">
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 drop-shadow-lg">
-                Welcome to {data.page || "Jajis"}
-              </h1>
-              <p className="text-xl md:text-2xl mb-8 opacity-90 drop-shadow-md">
-                {data.content || "Your one-stop destination for beauty and lifestyle services"}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="bg-white text-purple-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-200 shadow-lg">
-                  Explore Services
-                </button>
-                <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-purple-600 transition-colors duration-200 shadow-lg">
-                  Learn More
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Banner Navigation Dots */}
-          {data.images.length > 1 && (
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
-              {data.images.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentBannerIndex(index)}
-                  className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-                    index === currentBannerIndex ? 'bg-white' : 'bg-white bg-opacity-50'
-                  }`}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Banner Navigation Arrows */}
-          {data.images.length > 1 && (
-            <>
-              <button
-                onClick={() => setCurrentBannerIndex(prev => 
-                  prev === 0 ? data.images.length - 1 : prev - 1
-                )}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-all duration-200"
-              >
-                ←
-              </button>
-              <button
-                onClick={() => setCurrentBannerIndex(prev => 
-                  prev === data.images.length - 1 ? 0 : prev + 1
-                )}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-all duration-200"
-              >
-                →
-              </button>
-            </>
-          )}
-        </div>
-      ) : (
-        /* Fallback Hero Section when no images */
-        <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-            <div className="text-center">
-              <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                Welcome to {data.page || "Jajis"}
-              </h1>
-              <p className="text-xl md:text-2xl mb-8 opacity-90">
-                {data.content || "Your one-stop destination for beauty and lifestyle services"}
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="bg-white text-purple-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-200">
-                  Explore Services
-                </button>
-                <button className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-purple-600 transition-colors duration-200">
-                  Learn More
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          {/* Decorative elements */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-            <div className="absolute -top-40 -right-40 w-80 h-80 bg-white opacity-10 rounded-full"></div>
-            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-white opacity-10 rounded-full"></div>
+              Get in Touch
+            </Link>
+            <Link 
+              to="/about-us" 
+              className="border-2 border-black text-black px-8 py-4 rounded-full font-semibold hover:bg-black hover:text-white transition duration-300"
+            >
+              Learn About Us
+            </Link>
           </div>
         </div>
-      )}
-
-      {/* Banner Images Gallery */}
-      {data.images && data.images.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
-            Our Gallery
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {data.images.map((img) => (
-              <div key={img.id} className="group relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                <img 
-                  src={img.image_url} 
-                  alt={`Banner ${img.id}`}
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                  onError={(e) => {
-                    e.target.src = 'https://via.placeholder.com/400x300?text=Image+Not+Found';
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute bottom-0 left-0 right-0 p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <h3 className="font-semibold">Banner Image {img.id}</h3>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Services Preview */}
-      <div className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
-            Our Services
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { title: "Salons", icon: "💇‍♀️", description: "Professional beauty services" },
-              { title: "Cosmetics", icon: "💄", description: "Premium beauty products" },
-              { title: "Event Hall", icon: "🎉", description: "Perfect venues for celebrations" },
-              { title: "Food Court", icon: "🍽️", description: "Delicious dining options" },
-            ].map((service, index) => (
-              <div key={index} className="text-center p-6 rounded-lg hover:bg-purple-50 transition-colors duration-200">
-                <div className="text-4xl mb-4">{service.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">{service.title}</h3>
-                <p className="text-gray-600">{service.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }

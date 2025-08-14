@@ -10,7 +10,7 @@ export default function EventHall() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:8000/api/pages/event-hall/");
+        const response = await axios.get("http://localhost:8000/event-hall/");
         setData(response.data);
       } catch (err) {
         console.error("Error fetching event hall data:", err);
