@@ -140,8 +140,8 @@ export default function JajisHomepage() {
         const response = await axios.get("http://localhost:8000/");
         setData(response.data);
       } catch (err) {
-        console.error("Error fetching home page video:", err);
-        setError("Failed to load home page video");
+        console.error("Error fetching home page :", err);
+        setError("Failed to load home page ");
       } finally {
         setLoading(false);
       }
